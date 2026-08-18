@@ -1,0 +1,101 @@
+@import "tailwindcss";
+
+/* daisyUI 5 (CSS-first): 内置主题全部关闭，颜色由下方 @theme 的
+   --color-base-* / --color-primary / --color-accent 提供（自定义 lovable 主题） */
+@plugin "daisyui" {
+  themes: false;
+}
+
+/*
+ * ===== Lovable — "Warm parchment canvas" 设计 token（Tailwind v4 @theme）=====
+ * 唯一权威来源：工具类（text-* / bg-* / rounded-* / shadow-*）均由此生成。
+ * 对照样式参考：Style Reference > Quick Start > Tailwind v4
+ */
+@theme {
+  /* ---- Colors ---- */
+  --color-parchment: #fcfbf8;
+  --color-warm-sand: #f7f4ed;
+  --color-linen-border: #eceae4;
+  --color-stone: #d4d3d0;
+  --color-dim-gray: #5f5f5d;
+  --color-charcoal: #1c1c1c;
+  --color-ink: #030303;
+  --color-indigo-accent: #3451b2;
+
+  /* ---- Typography ---- */
+  /* Camera Plain Variable 替代字体：DM Sans (variable) */
+  --font-sans:
+    "DM Sans Variable", "DM Sans", ui-sans-serif, system-ui, -apple-system,
+    BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+  --text-caption: 14px;
+  --text-caption--line-height: 1.5;
+  --text-caption--letter-spacing: -0.35px;
+  --text-body: 16px;
+  --text-body--line-height: 1.5;
+  --text-body--letter-spacing: -0.4px;
+  --text-subheading: 18px;
+  --text-subheading--line-height: 1.38;
+  --text-subheading--letter-spacing: -0.45px;
+  --text-heading-sm: 20px;
+  --text-heading-sm--line-height: 1.25;
+  --text-heading-sm--letter-spacing: -0.5px;
+  --text-heading: 36px;
+  --text-heading--line-height: 1.1;
+  --text-heading--letter-spacing: -0.9px;
+  --text-heading-lg: 48px;
+  --text-heading-lg--line-height: 1.1;
+  --text-heading-lg--letter-spacing: -1.2px;
+  --text-display: 60px;
+  --text-display--line-height: 1;
+  --text-display--letter-spacing: -1.5px;
+
+  /* ---- Border radius ---- */
+  --radius-input: 8px;
+  --radius-img: 12px;
+  --radius-card: 16px;
+  --radius-card-lg: 24px;
+  --radius-pill: 9999px;
+
+  /* ---- Shadows ---- */
+  --shadow-subtle: oklch(0 0 0 / 0.25) 0px 0px 0px 0.5px inset;
+  --shadow-subtle-2:
+    oklab(0 0 0 / 0.08) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 20px 25px -5px,
+    rgba(0, 0, 0, 0.1) 0px 8px 10px -6px;
+  --shadow-subtle-3: oklch(0 0 0 / 0.16) 0px 0px 0px 0.5px inset;
+  /* 聊天输入卡片：悬浮投影 + 内嵌描边（elevated + inset 组合） */
+  --shadow-chat-input:
+    oklab(0 0 0 / 0.08) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 20px 25px -5px,
+    rgba(0, 0, 0, 0.1) 0px 8px 10px -6px,
+    oklch(0 0 0 / 0.25) 0px 0px 0px 0.5px inset;
+
+  /* ---- Backgrounds ---- */
+  /* 唯一的彩色来源：hero 全宽棱镜渐变，绝不用于单个 UI 控件 */
+  --background-image-hero-gradient: linear-gradient(
+    90deg,
+    rgb(28, 28, 28) 0%,
+    rgb(28, 28, 28) 33.33%,
+    rgb(130, 188, 255) 40%,
+    rgb(36, 131, 255) 45%,
+    rgb(255, 102, 244) 50%,
+    rgb(255, 48, 41) 55%,
+    rgb(254, 123, 2) 60%,
+    rgba(0, 0, 0, 0) 66.67%,
+    rgba(0, 0, 0, 0) 100%
+  );
+
+  /* ---- Layout ---- */
+  --max-width-page: 1280px;
+
+  /* ---- daisyUI surface 映射（lovable 主题）---- */
+  --color-base-100: #fcfbf8;
+  --color-base-200: #f7f4ed;
+  --color-base-300: #eceae4;
+  --color-base-content: #1c1c1c;
+  --color-primary: #1c1c1c;
+  --color-primary-content: #fcfbf8;
+  --color-accent: #3451b2;
+  --color-accent-content: #fcfbf8;
+  --color-neutral: #d4d3d0;
+  --color-neutral-content: #5f5f5d;
+}

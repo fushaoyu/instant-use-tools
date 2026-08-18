@@ -1,0 +1,56 @@
+/* ===== 全局基础样式 — Lovable "Warm parchment canvas" =====
+ * 设计 token 权威来源：tailwind.css 中的 @theme（生成工具类），
+ * lovable-tokens.scss 仅作为纯 CSS 变量备份层，两者值保持一致。
+ */
+@use "lovable-tokens";
+
+/* 全站唯一字体 + 全局收紧字距（-0.025em）+ 禁用连字（liga 0） */
+body {
+  margin: 0;
+  background-color: var(--color-parchment);
+  color: var(--color-charcoal);
+  font-family: var(--font-sans);
+  font-feature-settings: "liga" 0;
+  letter-spacing: -0.025em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* 选中态：炭黑反白，保持暖色调一致 */
+::selection {
+  background-color: var(--color-charcoal);
+  color: var(--color-parchment);
+}
+
+/* 焦点环：靛蓝强调色，唯一允许的 UI 彩色时刻 */
+:focus-visible {
+  outline: 2px solid var(--color-indigo-accent);
+  outline-offset: 2px;
+}
+
+/* 微交互默认过渡：0.15s ease（Motion & Transitions 章节） */
+a,
+button,
+[role="button"],
+input,
+select,
+textarea,
+label {
+  transition:
+    color 0.15s ease,
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    outline-color 0.15s ease,
+    fill 0.15s ease;
+}
+
+/* Logo bar：图标强制单色炭黑（覆盖 symbol 内硬编码 fill） */
+.logo-bar svg path {
+  fill: var(--color-charcoal);
+}
+
