@@ -3,7 +3,7 @@ import { createWebHashHistory, createRouter } from "vue-router";
 const routes = [
   {
     path: "/",
-    redirect: "/images-icon",
+    redirect: "/images-zoom",
   },
   {
     path: "/images-icon",
