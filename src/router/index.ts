@@ -31,6 +31,11 @@ const routes = [
     component: () => import("@/views/images-compress/index.vue"),
   },
   {
+    path: "/images-watermark",
+    name: "图片加水印",
+    component: () => import("@/views/images-watermark/index.vue"),
+  },
+  {
     path: "/videos-watermark",
     name: "视频水印",
     component: () => import("@/views/videos-watermark/index.vue"),

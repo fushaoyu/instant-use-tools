@@ -31,6 +31,7 @@ export const menus: MenuItem[] = [
       { name: "图片分割", path: "/images-split" },
       { name: "图片压缩", path: "/images-compress" },
       { name: "图片转图标", path: "/images-icon" },
+      { name: "图片加水印", path: "/images-watermark" },
       { name: "图片Base64转换", path: "/images-base64" },
     ],
   },
