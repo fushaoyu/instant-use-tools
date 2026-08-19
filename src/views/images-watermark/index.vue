@@ -370,8 +370,8 @@
           <h3 class="text-caption font-medium text-charcoal">实时预览（第一张图）</h3>
           <span v-if="isAddingFiles" class="text-[12px] text-dim-gray">图片读取中…</span>
         </div>
-        <div class="flex max-h-[520px] items-center justify-center overflow-hidden rounded-img bg-parchment">
-          <canvas ref="previewCanvasRef" class="max-h-[480px] max-w-full object-contain" />
+        <div class="flex max-h-130 items-center justify-center overflow-hidden rounded-img bg-parchment">
+          <canvas ref="previewCanvasRef" class="max-h-120 max-w-full object-contain" />
         </div>
         <p v-if="previewError" class="mt-3 text-caption text-indigo-accent">
           {{ previewError }}
