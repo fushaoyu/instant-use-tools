@@ -46,37 +46,14 @@
     <!-- 模式A：图片转 Base64 -->
     <div v-if="mode === 'toBase64'">
       <!-- 上传区域 -->
-      <div
-        class="border-2 border-dashed border-linen-border bg-warm-sand rounded-card-lg p-8 mb-6 text-center cursor-pointer"
-        :class="{ 'bg-stone/20': dragOver }"
-        @click="triggerFileInput"
-        @dragover.prevent="dragOver = true"
-        @dragleave="dragOver = false"
-        @drop.prevent="onDropFiles"
-      >
-        <z-icon :icon="ImageUp" :size="36" class="mx-auto mb-3 text-charcoal" />
-        <p class="text-body text-charcoal">点击或拖拽图片到此处上传</p>
-        <p class="mt-1 text-caption text-dim-gray">
-          支持多张，单图最大 {{ MAX_FILE_MB }}MB
-        </p>
-        <input
-          ref="fileInputRef"
-          type="file"
-          accept="image/*"
-          multiple
-          class="hidden"
-          @change="onFileSelected"
-        />
-      </div>
-
-      <!-- 警告提示 -->
-      <div
-        v-if="warningText"
-        class="flex items-center gap-1.5 text-caption text-indigo-accent mb-4"
-      >
-        <z-icon :icon="TriangleAlert" :size="14" />
-        <span>{{ warningText }}</span>
-      </div>
+      <z-upload
+        accept="image/*"
+        multiple
+        title="点击或拖拽图片到此处上传"
+        :subtitle="`支持多张，单图最大 ${MAX_FILE_MB}MB`"
+        :max-size-mb="MAX_FILE_MB"
+        @select="handleImageFiles"
+      />
 
       <!-- 结果面板 -->
       <div
@@ -183,21 +160,17 @@
 import { ref, onUnmounted } from "vue";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
-import { Code, ImageUp, TriangleAlert, Copy, Download } from "lucide-vue-next";
+import { Code, TriangleAlert, Copy, Download } from "lucide-vue-next";
 import ZIcon from "@/components/z-icon/index.vue";
+import ZUpload from "@/components/z-upload/index.vue";
 
 // ========== 常量配置 ==========
 const MAX_FILE_MB = 50;
-const MAX_FILE_BYTE = MAX_FILE_MB * 1024 * 1024;
 
 type WorkMode = "toBase64" | "toImage";
 const mode = ref<WorkMode>("toBase64");
 
 // -------- 图片转Base64 状态 --------
-const fileInputRef = ref<HTMLInputElement | null>(null);
-const dragOver = ref(false);
-const warningText = ref("");
-
 interface Base64ResultItem {
   uid: number;
   name: string;
@@ -212,46 +185,9 @@ const parseWarning = ref("");
 const previewImageBlob = ref<Blob | null>(null);
 const previewObjectUrl = ref("");
 
-/** 触发文件选择弹窗 */
-function triggerFileInput() {
-  fileInputRef.value?.click();
-}
-
-/** 拖拽上传 */
-function onDropFiles(e: DragEvent) {
-  dragOver.value = false;
-  const files = Array.from(e.dataTransfer!.files).filter((f) =>
-    f.type.startsWith("image/"),
-  );
-  handleImageFiles(files);
-}
-
-/** input选择文件 */
-function onFileSelected(e: Event) {
-  const target = e.target as HTMLInputElement;
-  if (!target.files) return;
-  handleImageFiles(Array.from(target.files));
-}
-
-/** 处理图片文件列表，转为dataURL(base64) */
+/** 处理 z-upload 过滤后的图片文件，转为dataURL(base64) */
 async function handleImageFiles(files: File[]) {
-  warningText.value = "";
-  const overflowNames: string[] = [];
-  const validFiles: File[] = [];
-
-  for (const f of files) {
-    if (f.size > MAX_FILE_BYTE) {
-      overflowNames.push(f.name);
-    } else {
-      validFiles.push(f);
-    }
-  }
-  if (overflowNames.length) {
-    warningText.value = `跳过超过${MAX_FILE_MB}MB：${overflowNames.join("、")}`;
-  }
-  if (!validFiles.length) return;
-
-  for (const file of validFiles) {
+  for (const file of files) {
     const dataUrl = await fileToBase64(file);
     resultBase64List.value.push({
       uid: Date.now() + Math.random(),

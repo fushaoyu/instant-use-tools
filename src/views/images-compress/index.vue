@@ -16,32 +16,18 @@
     </div>
 
     <!--上传区域 -->
-    <div
-      class="border-2 border-dashed border-linen-border bg-warm-sand rounded-card-lg p-8 mb-6 text-center cursor-pointer"
-      :class="{ 'bg-stone/20': dragOver }"
-      @click="triggerFileInput"
-      @dragover.prevent="dragOver = true"
-      @dragleave="dragOver = false"
-      @drop.prevent="onDropFiles"
-    >
-      <z-icon :icon="ImageUp" :size="36" class="mx-auto mb-3 text-charcoal" />
-      <p class="text-body text-charcoal">点击或拖拽图片上传，支持多张</p>
-      <p class="mt-1 text-caption text-dim-gray">
-        单图最大 {{ MAX_FILE_MB }}MB
-      </p>
-      <input
-        ref="fileInputRef"
-        type="file"
-        accept="image/*"
-        multiple
-        class="hidden"
-        @change="onFileSelected"
-      />
-    </div>
+    <z-upload
+      accept="image/*"
+      multiple
+      title="点击或拖拽图片上传，支持多张"
+      :subtitle="`单图最大 ${MAX_FILE_MB}MB`"
+      :max-size-mb="MAX_FILE_MB"
+      @select="handleInputFiles"
+    />
 
     <!--设置面板 -->
     <div
-      class="rounded-card-lg border border-linen-border bg-parchment p-6 sm:p-7 shadow-subtle-2 mb-6"
+      class="rounded-card-lg border border-linen-border bg-parchment p-6 sm:p-7 shadow-subtle-2 my-6"
     >
       <h3 class="text-subheading font-[480] text-charcoal mb-4">压缩参数</h3>
 
@@ -211,12 +197,12 @@
 import { ref, onUnmounted } from "vue";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
-import { ImageUp, TriangleAlert, CommandIcon } from "lucide-vue-next";
+import { TriangleAlert, CommandIcon } from "lucide-vue-next";
 import ZIcon from "@/components/z-icon/index.vue";
+import ZUpload from "@/components/z-upload/index.vue";
 
 //常量
 const MAX_FILE_MB = 50;
-const MAX_FILE_BYTE = MAX_FILE_MB * 1024 * 1024;
 
 interface SourceItem {
   uid: number;
@@ -234,8 +220,6 @@ interface CompressResultItem {
   rate: string;
 }
 
-const fileInputRef = ref<HTMLInputElement | null>(null);
-const dragOver = ref(false);
 const processing = ref(false);
 const warnText = ref("");
 
@@ -256,43 +240,9 @@ function formatFileSize(bytes: number): string {
   return (bytes / 1024 / 1024).toFixed(2) + " MB";
 }
 
-/**唤起文件选择 */
-function triggerFileInput() {
-  fileInputRef.value?.click();
-}
-
-/**拖拽上传 */
-function onDropFiles(e: DragEvent) {
-  dragOver.value = false;
-  const files = Array.from(e.dataTransfer!.files).filter((f) =>
-    f.type.startsWith("image/"),
-  );
-  handleInputFiles(files);
-}
-
-/**input选中文件 */
-function onFileSelected(e: Event) {
-  const target = e.target as HTMLInputElement;
-  if (!target.files) return;
-  handleInputFiles(Array.from(target.files));
-}
-
-/**处理上传文件 */
+/**接收 z-upload 过滤后的文件，生成预览 url */
 function handleInputFiles(files: File[]) {
-  warnText.value = "";
-  const overflowNames: string[] = [];
-  const validFiles: File[] = [];
-  for (const f of files) {
-    if (f.size > MAX_FILE_BYTE) {
-      overflowNames.push(f.name);
-    } else {
-      validFiles.push(f);
-    }
-  }
-  if (overflowNames.length > 0) {
-    warnText.value = `跳过超过${MAX_FILE_MB}MB文件：${overflowNames.join("、")}`;
-  }
-  for (const file of validFiles) {
+  for (const file of files) {
     const objUrl = URL.createObjectURL(file);
     revokeUrls.push(objUrl);
     sourceList.value.push({

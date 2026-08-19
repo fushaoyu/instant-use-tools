@@ -18,34 +18,13 @@
     </header>
 
     <!-- 上传区 -->
-    <div
-      class="flex cursor-pointer flex-col items-center justify-center gap-3 rounded-card-lg border-2 border-dashed border-linen-border bg-warm-sand py-12 text-center transition-colors hover:border-stone"
-      role="button"
-      tabindex="0"
-      aria-label="选择图片上传"
-      @click="triggerFileInput"
-      @keydown.enter="triggerFileInput"
-    >
-      <z-icon
-        :icon="CloudUpload"
-        :size="28"
-        class="text-dim-gray"
-        aria-hidden="true"
-      />
-      <div>
-        <p class="text-[15px] font-medium text-charcoal">点击选择图片</p>
-        <p class="mt-0.5 text-caption text-dim-gray">
-          支持 PNG、JPG、WebP 等常见格式
-        </p>
-      </div>
-      <input
-        ref="fileInputRef"
-        type="file"
-        accept="image/*"
-        class="hidden"
-        @change="onFileSelect"
-      />
-    </div>
+    <z-upload
+      accept="image/*"
+      :multiple="false"
+      title="点击选择图片"
+      subtitle="支持 PNG、JPG、WebP 等常见格式"
+      @select="onFileSelect"
+    />
 
     <!-- 预览 -->
     <img
@@ -171,19 +150,16 @@ import { ref, reactive, computed, onUnmounted } from "vue";
 import {
   Archive,
   CheckCircle2,
-  CloudUpload,
   ImageIcon,
   LoaderCircle,
 } from "lucide-vue-next";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import ZIcon from "@/components/z-icon/index.vue";
+import ZUpload from "@/components/z-upload/index.vue";
 
 // 尺寸常量
 const SIZES = [16, 24, 32, 48, 64, 128, 256, 512, 1024];
-
-// DOM Refs
-const fileInputRef = ref<HTMLInputElement | null>(null);
 
 // 状态
 const previewUrl = ref<string>("");
@@ -224,24 +200,9 @@ function clearDownloadItems() {
 
 onUnmounted(clearDownloadItems);
 
-/** 打开文件选择 */
-function triggerFileInput() {
-  fileInputRef.value?.click();
-}
-
-/** 切换尺寸选中 */
-function toggleSize(size: number) {
-  if (selectedSizes.has(size)) {
-    selectedSizes.delete(size);
-  } else {
-    selectedSizes.add(size);
-  }
-}
-
-/** 文件选择 */
-async function onFileSelect(e: Event) {
-  const target = e.target as HTMLInputElement;
-  const file = target.files?.[0];
+/** 文件选择（单选，取第一个） */
+async function onFileSelect(files: File[]) {
+  const file = files[0];
   if (!file) return;
 
   const url = URL.createObjectURL(file);
@@ -252,6 +213,15 @@ async function onFileSelect(e: Event) {
   await new Promise<void>((resolve) => (img.onload = () => resolve()));
   currentImage.value = img;
   showResult.value = false;
+}
+
+/** 切换尺寸选中 */
+function toggleSize(size: number) {
+  if (selectedSizes.has(size)) {
+    selectedSizes.delete(size);
+  } else {
+    selectedSizes.add(size);
+  }
 }
 
 /** 开始批量转换 */
